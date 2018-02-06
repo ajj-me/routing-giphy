@@ -6,19 +6,23 @@ const router = express.Router();
 
 router.get('/search', (req, res) => {
     console.log('here');
-    const config = {
-        params: {
-            api_key: process.env.GIPHY_API_KEY,
-            q: 'cows'
-        }
-    }
-    axios.get('https://api.giphy.com/v1/gifs/search', config)
-        .then(response => {
+    const url = `https://api.giphy.com/v1/gifs/search?q=${req.query.q}&api_key=${process.env.GIPHY_API_KEY}`;
+    // const config = {
+    //     api_key: process.env.GIPHY_API_KEY,
+    //     q: req.query
+    // };
+    // console.log('asdf', req.query.q);
+
+    // console.log(url);
+    axios.get(url)
+        .then(function(response) {
         //   self.pagination = response.data.pagination.offset;
         //   self.count = response.data.pagination.count;
-            res.send(response);
+            res.send(response.data);
+            console.log(response);
         })
-        .catch(error => {
+        .catch(function(error) {
+            console.log('error');
             res.sendStatus(500);
         });
 });
