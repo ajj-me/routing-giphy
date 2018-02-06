@@ -3,7 +3,6 @@ const express = require('express');
 const router = express.Router();
 
 
-
 router.get('/search', (req, res) => {
     console.log('here');
     const url = `https://api.giphy.com/v1/gifs/search?q=${req.query.q}&api_key=${process.env.GIPHY_API_KEY}`;
@@ -46,5 +45,35 @@ router.get('/random', (req, res) => {
     
 
 });
+
+
+function queryMaker(query, params) {
+    const queries = Object.keys(query);
+    let queryString = 'https://api.giphy.com/' + params[0];
+    if (params[1]) {
+        queryString += '/' + params[1];
+    }
+    for (let i = 0; i < queries.length; i++) {
+        if (i === 0) {
+            queryString += '?';
+        } else {
+            queryString += '&';
+        }
+        queryString += queries[i] + '=' + query[queries[i]];
+    }
+    return queryString;
+}
+
+router.get('/:firstParam', (req, res) => {
+    let queryString = queryMaker(req.query, [req.params.firstParam]);
+    console.log(queryString);
+    res.send(req.params);
+});
+router.get('/:firstParam/:secondParam', (req, res) => {
+    let queryString = queryMaker(req.query, [req.params.firstParam, req.params.secondParam]);
+    console.log(queryString);
+    res.send(req.params);
+});
+
 
 module.exports = router;
